@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <title>Facebook</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/facebook.css" rel="stylesheet">
+        <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+ 		<script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+  		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+        
+   
+        <script type="text/javascript">
+        
+        
+        $(document).ready(function() {
+        	
+        	$("#logoutButton1").click(function(e){
+        		$.cookie("ID","");
+        		window.location.replace("appHome.html");
+        		
+        	});
+        	
+        	
+        	$("#postbutton").click(function(e)
+        	{
+        		var msg=$("textarea#posttext").val();
+        		document.write(msg);
+                 
+             console.log('add new status');
+         $.ajax({
+             type: "POST",
+             contentType: "text/plain",  //send data to server in this format
+             url:"http://localhost:8080/DM_temporal/webapi/user/poststatus",
+             dataType: "text",  //expect response of this type
+             data: msg,
+             success: function(resp){
+                 //alert("succes done");
+                 //alert(data);
+                 
+                 if(resp!=null){
+                 	 	   
+                         	  
+                 }	
+                 else
+                 {
+                 	 document.getElementById("signupFail").innerHTML="Status posting failed ";  	
+                 	//alert("Signup failed..emailID already exists. ")
+                 	//window.location.replace("appHome.html");
+                 }	
+
+                 
+             },
+             error: function(jqXHR, textStatus, errorThrown){
+             	document.getElementById("signupFail").innerHTML="signup error..try again";
+             	//alert('add user error: ' + textStatus);
+             }
+         });
+                	
+             	
+             
+        	});//postbutton click ends here
+        	
+        	$.ajax({
+       		 type: "GET",
+   	        url:"http://localhost:8080/DM_temporal/webapi/user/retriveName",
+   	        dataType: "JSON",  //expect response of this type
+                 
+                 success: function(response){  
+                     // we have the response  
+                     if(response!=null){
+                    	 var obj = JSON.parse(JSON.stringify(response)); 
+                      	 document.getElementById("userName").innerHTML=obj.username;
+                     }  
+                     
+                     else
+                  	   {
+                  	  	alert("data cannot be fetched");
+                  	   }
+                   },
+  	    
+        			error: function(e){  
+          					alert('Error121212: ' + e);  
+          					alert(e.toString());
+        			}				
+          
+  	  });//ajax call ends
+  	  
+  	  
+  	$.ajax({
+  		 type: "GET",
+	        url:"http://localhost:8080/DM_temporal/webapi/user/currentStatus",
+	        dataType: "JSON",  //expect response of this type
+            
+            success: function(response){  
+                // we have the response  
+                if(response!=null){
+               	 var obj = JSON.parse(JSON.stringify(response)); 
+               	 	alert(obj.msg);
+                 	 document.getElementById("yourStatus").innerHTML=obj.msg;
+                }  
+                
+                else
+             	   {
+             	  	alert("data cannot be fetched");
+             	   }
+              },
+	    
+   			error: function(e){  
+     					alert('Error121212: ' + e);  
+     					alert(e.toString());
+   			}				
+     
+	  });//ajax call ends
+  	  
+        	
+        	
+        	
+        	
+        	
+ 
+        }); //document ready ends 
+        
+        </script>
+        
+    </head>
+    
+    <body>
+        
+        <div class="wrapper">
+			<div class="box">
+				  <div class="row row-offcanvas row-offcanvas-right">
+				 
+				
+					<!-- main right col -->
+					<div class="column col-sm-12 col-md-12" id="main">
+						
+						<!-- top nav -->
+						 <div class="navbar navbar-blue navbar-static-top">  
+                            <div class="navbar-header">
+                             
+                              <a href="#" class="navbar-brand logo">f</a>
+                            </div>
+                            <nav class="collapse navbar-collapse " role="navigation" align="center">
+                            
+                            <ul class="nav navbar-nav navbar-center">
+                            <li>
+                                <a href="timeLine1.html" id="userName"><i class="glyphicon glyphicon-user"></i> User Name</a>
+                              </li>
+   
+    <li><a type="submit" class="" id="logoutButton1">Logout</a></li>
+  
+							</ul>
+                           
+                            
+                            </nav>
+                        </div>
+						<!-- /top nav -->
+				
+					  
+					  
+							<div class="full col-sm-12">
+							  
+								<!-- content -->
+								<div class="row">
+								
+					
+							<br>
+				
+								 <div class="col-sm-6 col-md-6">
+								   			
+										<div class="well"> 
+										   <form class="form-horizontal" role="form">
+											<h4>Update status here</h4>
+											 <div class="form-group" style="padding:14px;">
+											  <textarea class="form-control" placeholder="Update your status" id="posttext"></textarea>
+											</div>  
+											
+									
+											                  
+ 											<button class="btn btn-primary pull-right" type="button" id="postbutton">Post</button><ul class="list-inline"><li><a href=""><!-- <i class="glyphicon glyphicon-upload"></i> --></a></li></ul>
+										 
+										   </form>
+									  </div>
+								   
+								 </div>
+								  
+								  <!-- main col center -->
+								  <div class="col-sm-6 col-md-6">
+									   
+										<div class="well"> 
+										   <form class="form-horizontal" role="form">
+											<h4>Your current status</h4>
+											 <div class="form-group" style="padding:14px;">
+											  <textarea class="form-control"  id="yourStatus"></textarea>
+											</div>  
+									
+										   </form>
+									  </div>
+									
+								  </div>
+								  
+			
+						  
+							   </div><!--/row-->
+
+						<div class="row">
+						<div class="form-group">
+  							<label for="sel1">Select operator:</label>
+  							<select class="form-control" id="sel1">
+    							<option>1</option>
+    							<option>2</option>
+    							<option>3</option>
+						  </select>
+						</div>
+						</div>	  
+							  
+							  
+							</div><!-- /col-9 -->
+						</div><!-- /padding -->
+					</div>
+					<!-- /main -->
+				  
+				</div>
+			</div>
+		
+
+
+		<!--post modal-->
+		 <div id="postModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+			 
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
+					Update Status
+			  </div>
+			  <div class="modal-body">
+				  <form class="form center-block">
+					<div class="form-group">
+					  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea>
+					</div>
+				  </form>
+			  </div>
+			  <div class="modal-footer">
+				  <div>
+				  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button>
+					<ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
+				  </div>	
+			  </div>
+		  </div>
+		  </div>
+		</div> 
+		
+		
+		
+		
+        
+        
+        
+    
+     
+     
+             <script>
+  $( function() {
+    $( "#datepicker" ).datepicker({dateFormat: "yy-mm-dd"});
+  } );
+  $( function() {
+	    $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+	  } );
+  </script>
+     
+		
+		
+		
+        
+</body></html>

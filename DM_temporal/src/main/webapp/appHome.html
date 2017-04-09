@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>app home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
+  <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+   <script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
+  <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
+  
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+$("#signupForm").submit(function(e){
+        e.preventDefault();
+ });
+
+$("#loginForm").submit(function(e){
+    e.preventDefault();
+});
+	
+  $("#create_account").click(function(e){
+	
+           var username=$("input#username").val();
+           var re_email=$("input#re_email").val();
+           var password=$("input#password").val();
+           
+           if(username!=re_email)
+        	   {
+        	   document.getElementById("signupFail").innerHTML="Username name not matching.. try again";
+        	   }
+        		   
+           
+           
+           else  if(username=="" ||re_email=="" || password=="")
+        	{
+        	document.getElementById("signupFail").innerHTML="Please fill all the fields";
+        		//alert("Please fill all the fields");
+        		//window.location.replace("appHome.html");
+        	}
+        
+        else
+        {
+        	//make REST call here using ajax jquery
+        	//localStorage.setItem('token', token);
+        	var obj = { username:username,password:password};  
+        	var myJSON = JSON.stringify(obj);
+			//document.write(myJSON);
+            
+        console.log('add new user');
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",  //send data to server in this format
+        url:"http://localhost:8080/DM_temporal/webapi/user/signup",
+        
+        dataType: "text",  //expect response of this type
+        data: myJSON,
+        success: function(resp){
+            //alert("succes done");
+            //alert(data);
+            
+            if(resp!=null){
+            			
+            	          $.cookie("ID",username);
+                    	  window.location.replace("status_page.html");
+                    	  
+            }	
+            else
+            {
+            	 document.getElementById("signupFail").innerHTML="Signup failed..username already exists.Try again ";  	
+            	//alert("Signup failed..username already exists. ")
+            	//window.location.replace("appHome.html");
+            }	
+
+            
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+        	document.getElementById("signupFail").innerHTML="signup error..try again";
+        	//alert('add user error: ' + textStatus);
+        }
+    });
+           	
+        	
+        }	//else ends
+   });//create_account ends
+   
+   
+  $("#loginButton").click(function(e){
+      //get the form data using another method 
+         
+          var username=$("input#username1").val();
+          var pwd1=$("input#password1").val();
+          
+       if(username=="" || pwd1=="")
+       	{
+    	   document.getElementById("incorrectLogin").innerHTML="Please fill all the fields";
+       	}
+       else
+       {
+       var obj = {username:username,password:pwd1};  
+      	var myJSON = JSON.stringify(obj);
+
+          //make the AJAX request, dataType is set to json
+          //meaning we are expecting JSON data in response from the server
+          $.ajax({
+       	   
+       	   url: "http://localhost:8080/DM_temporal/webapi/user/login",
+              type: "POST",
+              dataType: "text",
+              data: myJSON,
+              crossDomain: true,
+              processData: true,
+              contentType : "application/json",
+              success: function(resp){  
+                  // we have the response  
+                  if(resp!=null){
+	
+                	  //document.cookie = "ID="+resp+";"+ "expires=Thu, 18 Dec 2019 12:00:00 UTC";
+                	  //alert("login success");
+                	  $.cookie("ID",username);
+                	  window.location.replace("status_page.html");
+                	   
+                 }
+                  else
+               	   {
+                   document.getElementById("incorrectLogin").innerHTML="login failed.. incorrect username or password.. try again";		  
+               	   //alert("login failed.. incorrect username or password.. try again");
+               	   //$.removeCookie("ID");
+               	   //window.location.replace("appHome.html");
+               	   }
+                },  
+                error: function(e){  
+                  alert('Error121212: ' + e);  
+                 
+                } 
+       	   
+          
+          });
+       }//else ends
+          
+  });   
+   
+   
+   
+});//docment ready ends here
+</script>
+
+
+</head>
+<body style="background-color:#e1e8ed">
+<nav class="navbar navbar-default" style="background-color:#3b5998; min-height:80px;">
+  <div class="container-fluid">
+    <form class="navbar-form navbar-left" >
+        <div class="form-group">
+          <img src="Facebook-logo.jpg" alt="facebook_logo" width="200" height="100" style="margin-left:200px">
+        </div>
+      </form>
+
+     <form class="navbar-form navbar-right" action="#" id="loginForm">
+        <div class="form-group">
+        <input type="text" class="form-control" placeholder="Email" id="username1" style="margin-top:40px">
+          <input type="password" class="form-control" placeholder="Password" id="password1" style="margin-top:40px">
+        </div>
+        <button type="submit" id="loginButton" class="btn btn-default" style="margin-top:40px">Log In</button>
+      	<div id="incorrectLogin" style="color:white;" ></div>
+      </form>
+    </div>
+
+</nav>
+<nav class="navbar navbar-default" style="background-color:white;min-height:500px; background-color:#e1e8ed;">
+	<img src="148670969337123.png" alt="connecting people" width="580" height="380" style="margin-left:10em; margin-top:30px">
+	
+	<form class="navbar-form navbar-right" action="#" id="signupForm">
+		<div id="signupFail" style="color:red;"></div>	
+		<h1 style="color: black; margin-right:6em; margin-top:0px"><i class="fa fa-shield"></i>Create an account</h1>
+	
+		<input type="text" class="form-control" placeholder="Username" id="username" style="margin-top:10px; width:400px">
+		</br>
+		<input type="text" class="form-control" placeholder="Re-enter username " id="re_email" style="margin-top:10px; width:400px">
+		</br>
+		<input type="password" class="form-control" placeholder="Password" id="password" style="margin-top:10px; width:400px">
+		</br>
+	              </br>
+				<input type="button" id = "create_account" class="btn btn-success" value="Create account" style="height:40px; width:60%;">	 
+				
+	</form>
+</nav>
+</body>
+</html>
