@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import com.mongodb.util.JSON;
 
+import dm_project.DM_temporal.model.Message;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +35,307 @@ public class TemporalDB{
 	public TemporalDB(String dbName){
 		TemporalDB.dbName = dbName;
 	}
+	
+    public static Message getFirst(String username)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		
+     		System.out.println("insdod try catch");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			
+		   BasicDBObject whereQuery = new BasicDBObject();
+           whereQuery.put("username",username);
+	          
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = first(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,whereQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+	
+	
+    public static Message getLast(String username)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		
+     		System.out.println("inside  try catch of last");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			
+           BasicDBObject andQuery = new BasicDBObject();
+	          List<BasicDBObject> obj33 = new ArrayList<BasicDBObject>();
+	          obj33.add(new BasicDBObject("username",username));
+	          obj33.add(new BasicDBObject("validTo",null));
+	          
+	          andQuery.put("$and", obj33);
+           
+           
+           
+           //map:function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}
+           String map = "function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){return values;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,andQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    final JSONObject m112 = obj.getJSONObject("_id");
+		    
+		    m1.setMsg(m112.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+	
+    
+    
+
+    public static Message getPrevious(String username,long date)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			BasicDBObject getQuery = new BasicDBObject();
+		    getQuery.put("validFrom", new BasicDBObject("$lt",date));
+			getQuery.put("username",username);
+		   
+           
+           
+           //map:function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = previous(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,getQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+    
+    public static Message getNext(String username,long date)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		//date=long(1491868800000);
+     		System.out.println("inside  try catch of last");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			BasicDBObject getQuery = new BasicDBObject();
+		    getQuery.put("validFrom", new BasicDBObject("$gt",date));
+			getQuery.put("username",username);
+		   
+           
+           
+           //map:function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = next(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,getQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+    
+    
+    public static Message previous_Day(String username)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		
+     		System.out.println("insdod try catch");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			
+		   BasicDBObject whereQuery = new BasicDBObject();
+           whereQuery.put("username",username);
+	          
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = previousDay(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,whereQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+	
+    
+    
+    public static Message previous_Hour(String username)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		
+     		System.out.println("insdod try catch");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			
+		   BasicDBObject whereQuery = new BasicDBObject();
+           whereQuery.put("username",username);
+	          
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = previousHour(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,whereQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+    
+    public static Message previous_Month(String username)
+    {
+         Message m1=new Message();
+         
+     	try{
+     		
+     		System.out.println("insdod try catch");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			
+		   BasicDBObject whereQuery = new BasicDBObject();
+           whereQuery.put("username",username);
+	          
+           String map = "function(){emit({userID:this.username},{msg:this.msg,validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){var result = previousMonth(key,values);return result;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,whereQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    
+		    final JSONObject obj = new JSONObject(json_data);
+		    final JSONObject m11 = obj.getJSONObject("value");
+		    
+		    m1.setMsg(m11.getString("msg"));
+		    m1.setValidFrom(m11.getLong("validFrom"));
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1; 
+    }
+    
 	public static boolean insertIntoDB(String collection_name,HashMap<String, String> hm){
 		String s1_uname="";
 		try{
@@ -95,10 +398,7 @@ public class TemporalDB{
 		   System.out.println("newDocument="+newDocument );	
 		   String uname1="";
 		   long timeFrom;
-		  //String uname1=(String) newDocument.get(s1_uname);
-		   //long l2=(long) newDocument.get("validFrom");
-		  // System.out.println("uname===="+uname1);
-		   //System.out.println("valid from===="+l2);
+		
 		   if(flag==1)
 		   {
 			
@@ -139,5 +439,4 @@ public class TemporalDB{
 		}
 		return false;
 	}
-	
-};
+}

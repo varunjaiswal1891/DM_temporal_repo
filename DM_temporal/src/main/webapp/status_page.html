@@ -11,7 +11,22 @@
         <script type="text/javascript" src="Jquery/jquery-3.1.1.js"></script>
  		<script type="text/javascript" src="Jquery/jquery.cookie.js"></script>
   		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>  
-        
+  		<script src="temporal.js"></script> 
+  		<script src="dcalendar.picker.js"></script>
+  		<link href="css/dcalendar.picker.css" rel="stylesheet">
+        <script>
+        $('#from').dcalendarpicker();
+        $('#from').dcalendarpicker({
+        	format:'dd-mm-yyyy'        	
+        });
+        </script>
+   
+   		  <script>
+        $('#from2').dcalendarpicker();
+        $('#from2').dcalendarpicker({
+        	format:'dd-mm-yyyy'        	
+        });
+        </script> 
    
         <script type="text/javascript">
         
@@ -78,13 +93,13 @@
                      
                      else
                   	   {
-                  	  	alert("data cannot be fetched");
+                  	  	//alert("data cannot be fetched");
                   	   }
                    },
   	    
         			error: function(e){  
-          					alert('Error121212: ' + e);  
-          					alert(e.toString());
+          					//alert('Error121212: ' + e);  
+          					//alert(e.toString());
         			}				
           
   	  });//ajax call ends
@@ -99,7 +114,7 @@
                 // we have the response  
                 if(response!=null){
                	 var obj = JSON.parse(JSON.stringify(response)); 
-               	 	alert(obj.msg);
+               	 	//alert(obj.msg);
                  	 document.getElementById("yourStatus").innerHTML=obj.msg;
                 }  
                 
@@ -110,8 +125,8 @@
               },
 	    
    			error: function(e){  
-     					alert('Error121212: ' + e);  
-     					alert(e.toString());
+     					//alert('Error121212: ' + e);  
+     					//alert(e.toString());
    			}				
      
 	  });//ajax call ends
@@ -207,64 +222,59 @@
 						  
 							   </div><!--/row-->
 
-						<div class="row">
-						<div class="form-group">
-  							<label for="sel1">Select operator:</label>
-  							<select class="form-control" id="sel1">
-    							<option>1</option>
-    							<option>2</option>
-    							<option>3</option>
-						  </select>
-						</div>
-						</div>	  
-							  
-							  
-							</div><!-- /col-9 -->
-						</div><!-- /padding -->
-					</div>
-					<!-- /main -->
-				  
-				</div>
+		<div class="row">
+		<div class="form-group">
+					<label for="sel1">Select operator:</label>
+					<select class="form-control" id="sel1" onchange="callOperators()">
+							<option hidden=true>Choose Operator..</option>
+							<option value="11">FIRST</option>
+							<option value="12">LAST</option>
+							<option value="2">Previous</option>
+							<option value="3">Next</option>
+							<option value="41">Previous_Scale DAY</option>
+							<option value="42">Previous_Scale HOUR</option>
+							<option value="43">Previous_Scale MONTH</option>
+							<option value="51">Next_Scale DAY</option>
+							<option value="52">Next_Scale HOUR</option>
+							<option value="53">Next_Scale MONTH</option>
+							<option value="6">Evolution_History</option>
+							<option value="7">Evolution_Column(AS OF)</option>
+							<option value="81">First Evolution</option>
+							<option value="82">Last Evolution</option>
+							<option value="9">Evolution (Val1-Val2)</option>
+							<option value="10">Column Timestamps Val</option>
+							<option value="11">This Column Value()</option>
+		  </select>
+		</div>
+		</div>	
+		
+		<div id="calenderPickerPreviousOperator" style="display:none">
+			<input type="date" name="from" id="from"/>
+			<input type="button" value="OK" onclick="previousOperator()">
+		</div>
+		
+		<div id="calenderPickerNextOperator" style="display:none">
+			<input type="date" name="from" id="from2"/>
+			<input type="button" value="OK" onclick="nextOperator()">
+		</div>
+		
+		<div class="panel panel-success">
+			<div class="panel-body">
+				<table class="table" id="showResult">
+				</table>
 			</div>
-		
+		</div>  
+							  
+							  
+				</div><!-- /col-9 -->
+			</div><!-- /padding -->
+		</div>
+	</div>
+</div>
 
 
-		<!--post modal-->
-		 <div id="postModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-		  <div class="modal-dialog">
-		  <div class="modal-content">
-			  <div class="modal-header">
-			 
-				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Hide</button>
-					Update Status
-			  </div>
-			  <div class="modal-body">
-				  <form class="form center-block">
-					<div class="form-group">
-					  <textarea class="form-control input-lg" autofocus="" placeholder="What do you want to share?"></textarea>
-					</div>
-				  </form>
-			  </div>
-			  <div class="modal-footer">
-				  <div>
-				  <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Post</button>
-					<ul class="pull-left list-inline"><li><a href=""><i class="glyphicon glyphicon-upload"></i></a></li><li><a href=""><i class="glyphicon glyphicon-camera"></i></a></li><li><a href=""><i class="glyphicon glyphicon-map-marker"></i></a></li></ul>
-				  </div>	
-			  </div>
-		  </div>
-		  </div>
-		</div> 
-		
-		
-		
-		
-        
-        
-        
-    
      
-     
-             <script>
+  <script>
   $( function() {
     $( "#datepicker" ).datepicker({dateFormat: "yy-mm-dd"});
   } );
@@ -272,9 +282,5 @@
 	    $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
 	  } );
   </script>
-     
-		
-		
-		
-        
+  
 </body></html>

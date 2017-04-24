@@ -110,54 +110,7 @@ public class UserService {
         return false;
     }//login method ends here
 	
-	
-	
-	/*public static boolean insertIntoDB(String collection_name,HashMap<String,String> hm){
-		
-		try{
-		 MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-   	     DB db = mongoClient.getDB("varundb");
-   	 
-         System.out.println("Connect to database successfully varun");
-         DBCollection collection = db.getCollection(collection_name);
-         
-         BasicDBObject bdb = new BasicDBObject();
-			Date d = new Date();
-         
-         
-         Iterator<Entry<String, String>> it = hm.entrySet().iterator();
-         while (it.hasNext()) {
-             Map.Entry pair = (Map.Entry)it.next();
-             System.out.println(pair.getKey() + " = " + pair.getValue());
-         	String key=pair.getKey().toString();
-			String value=pair.getValue().toString();
-			bdb.put(key,value);
-             it.remove(); // avoids a ConcurrentModificationException
-         }
-            bdb.put("validFrom",d.getTime());
-			bdb.put("validTo",null);
-			collection.insert(bdb);
-		System.out.println("insert success");
-		 DBCursor cursorDocJSON = collection.find();
-         while (cursorDocJSON.hasNext()) {
-   			System.out.println(cursorDocJSON.next());
-   		}
-         cursorDocJSON.close();
-         
-         
 
-         
-         
-		return true;
-			
-		}
-		catch(Exception e){
-			System.out.println(e.getMessage());
-		}
-		return false;
-	}
-	
-	*/
 	
 	
 	public static String getUserNameService(String uname)
@@ -213,8 +166,7 @@ public class UserService {
 	          DBCursor cursor = collection.find(whereQuery);
 	          while(cursor.hasNext()) {
 	        	  result=cursor.next();
-	        	  System.out.println("pppppppppppppppppppppppppp");
-	              System.out.println(result);
+	        	  //System.out.println(result);
 	          }
 	          
 	          cursor.close();

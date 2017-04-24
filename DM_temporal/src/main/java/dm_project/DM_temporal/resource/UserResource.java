@@ -2,7 +2,9 @@ package dm_project.DM_temporal.resource;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.jws.WebMethod;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import dm_project.DM_temporal.model.Message;
 import dm_project.DM_temporal.model.User;
 import dm_project.DM_temporal.service.UserService;
 import dm_project.DM_temporal.service.TemporalDB;
@@ -80,9 +83,6 @@ public class UserResource {
 		return result;
 	}//get username method ends here
 	
-	
-	
-	
 	@POST
     @Path("/poststatus")
 	@Consumes({MediaType.TEXT_PLAIN})
@@ -103,8 +103,64 @@ public class UserResource {
 				
 			}
 		return null;
-	}//adduser method ends here
+	}//poststus method ends here
 	
+	
+	
+	@GET
+    @Path("/first_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getFirst(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.getFirst(uname); 
+	}
+	
+	@GET
+    @Path("/last_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getLast(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.getLast(uname); 
+	}
+	
+	
+	@GET
+    @Path("/previous_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_JSON})
+    public Message getPrevious1(@CookieParam("ID") String uname,@CookieParam("date1") long date1) throws JsonParseException, JsonMappingException, IOException, ParseException{
+	
+		return TemporalDB.getPrevious(uname,date1); 
+	}
+	
+	@GET
+    @Path("/Varun_operator")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getNext1(@CookieParam("ID") String uname,@CookieParam("date1") long date1) throws JsonParseException, JsonMappingException, IOException, ParseException{
+		System.out.println("here====="+uname);
+		System.out.println("date ms="+date1);
+		return TemporalDB.getNext(uname,date1); 
+	}
+	
+	@GET
+    @Path("/previous_Day_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getPreviousDay(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.previous_Day(uname); 
+	}
+	
+	@GET
+    @Path("/previous_Hour_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getPreviousHour(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.previous_Hour(uname); 
+	}
+	
+	@GET
+    @Path("/previous_Month_operator")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getPreviousMonth(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.previous_Month(uname); 
+	}
 	
 	
 	
