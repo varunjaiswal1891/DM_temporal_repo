@@ -28,6 +28,13 @@
         });
         </script> 
    
+   		 <script>
+        $('#from3').dcalendarpicker();
+        $('#from3').dcalendarpicker({
+        	format:'dd-mm-yyyy'        	
+        });
+        </script> 
+   
         <script type="text/javascript">
         
         
@@ -257,6 +264,14 @@
 			<input type="date" name="from" id="from2"/>
 			<input type="button" value="OK" onclick="nextOperator()">
 		</div>
+		
+		<div id="calenderPickerEvolutionColumnOperator" style="display:none">
+			<input type="date" name="from" id="from3"/>
+			<input type="button" value="OK" onclick="evolutionColumnOperator()">
+		</div>
+		
+		
+		
 		
 		<div class="panel panel-success">
 			<div class="panel-body">

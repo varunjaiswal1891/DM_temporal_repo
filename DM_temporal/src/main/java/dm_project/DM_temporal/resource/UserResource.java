@@ -162,6 +162,40 @@ public class UserResource {
 		return TemporalDB.previous_Month(uname); 
 	}
 	
+	@GET
+    @Path("/give_evolution_history")
+	@Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<Message> getEvolutionHistory(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.evolutionHistory(uname); 
+	}
+	
+	
+	@GET
+    @Path("/get_evolution_column")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<Message> getEvolution_column(@CookieParam("ID") String uname,@CookieParam("date1") long date1) throws JsonParseException, JsonMappingException, IOException, ParseException{
+		System.out.println("here====="+uname);
+		System.out.println("date ms="+date1);
+		return TemporalDB.evolution_column(uname, date1);
+	}
+	
+	
+	
+	@GET
+    @Path("/get_evolution_first")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getEvolutionFIRST(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.getEvolutionFirst(uname); 
+	}
+	
+	
+	@GET
+    @Path("/get_evolution_last")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getEvolutionLAST(@CookieParam("ID") String uname) throws JsonParseException, JsonMappingException, IOException{
+		return TemporalDB.getEvolutionLast(uname);
+	}
 	
 	
 }//class ends here

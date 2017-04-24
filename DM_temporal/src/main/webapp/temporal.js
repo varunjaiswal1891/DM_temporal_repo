@@ -3,6 +3,7 @@ function callOperators(){
 	var operator_number=$('#sel1 :selected').val();	
 	$('#calenderPickerPreviousOperator').hide();
 	$('#calenderPickerNextOperator').hide();
+	$('#calenderPickerEvolutionColumnOperator').hide();
 	$('#showResult').empty();
 	
 	switch (operator_number) {
@@ -33,13 +34,17 @@ function callOperators(){
         break;
     case  '53':
         break;
-    case  6:
+    case  '6':
+    	    evolution_History_Operator();  //it gives all data till now
         break;
-    case  7:
+    case  '7':
+    	    $('#calenderPickerEvolutionColumnOperator').show();  //it gives all data till given date
         break;
-    case  81:
+    case  '81':
+    	    firstEvolutionOperator();
         break;
-    case  82:
+    case  '82':
+    	    lastEvolutionOperator();
         break;
 	}
 }
@@ -287,6 +292,182 @@ function previous_Month_Operator(){
  		 type: "GET",
 	        url:"http://localhost:8080/DM_temporal/webapi/user/previous_Month_operator",
 	        contentType:"text/plain", 	        
+           
+           success: function(response){   
+               if(response!=null){
+              	 var obj = JSON.parse(JSON.stringify(response)); 
+              	 var status = obj.msg;
+              	 var d = new Date(obj.validFrom);
+              	 element = '<tr>'+
+              	 			'<th>Status</th>'+
+              	 			'<th>PostedOn</th></tr>';
+              	 element = element +
+              	 			'<tr>'+
+              	 			'<td>'+status+'</td>'+
+              	 			'<td>'+d+'</td>'+
+              	 			'<tr>';
+              	 $('#showResult').append(element);
+               }  
+               
+               else
+            	   {
+            	  	alert("data cannot be fetched");
+            	   }
+             },
+	    
+  			error: function(e){  
+    					alert('Error121212: ' + e);  
+    					alert(e.toString());
+  			}				
+    
+	  });//ajax call ends
+}
+
+
+function evolution_History_Operator(){
+	$('#showResult').empty();
+	$.ajax({
+ 		 type: "GET",
+	        url:"http://localhost:8080/DM_temporal/webapi/user/give_evolution_history",
+	        contentType:"text/plain",
+ 	        datatype:"json",
+           
+           success: function(response){   
+               if(response!=null){
+              	 var data = JSON.parse(JSON.stringify(response)); 
+              	
+              	 
+
+              	 element = '<tr>'+
+              	 			'<th>Status</th>'+
+              	 			'<th>PostedOn</th></tr>';
+
+              	for (var i=0; i < data.length; i++){
+              		 var status = data[i].msg;
+                  	 var d = new Date(data[i].validFrom);
+                     	 element = element +
+                     	 			'<tr>'+
+                     	 			'<td>'+status+'</td>'+
+                     	 			'<td>'+d+'</td>'+
+                     	 			'<tr>';
+              	
+              	}
+              	 
+              	 
+              	 $('#showResult').append(element);
+               }  
+               
+               else
+            	   {
+            	  	alert("data cannot be fetched");
+            	   }
+             },
+	    
+  			error: function(e){  
+    					alert('Error121212: ' + e);  
+    					alert(e.toString());
+  			}				
+    
+	  });//ajax call ends
+}
+
+
+function evolutionColumnOperator(){
+	var dateString = document.getElementById('from3').value;
+	var date = new Date(dateString).getTime();
+	//alert("im u next");
+	$.cookie("date1",date);
+	$('#showResult').empty();
+	$.ajax({
+		    type: "GET",
+	        url:"http://localhost:8080/DM_temporal/webapi/user/get_evolution_column",
+	        contentType:"application/json",
+	        datatype:"json",
+          
+	           success: function(response){   
+	               if(response!=null){
+	              	 var data = JSON.parse(JSON.stringify(response)); 
+	              	 
+	              	 element = '<tr>'+
+	              	 			'<th>Status</th>'+
+	              	 			'<th>PostedOn</th></tr>';
+
+	              	for (var i=0; i < data.length; i++){
+	              		 var status = data[i].msg;
+	                  	 var d = new Date(data[i].validFrom);
+	                     	 element = element +
+	                     	 			'<tr>'+
+	                     	 			'<td>'+status+'</td>'+
+	                     	 			'<td>'+d+'</td>'+
+	                     	 			'<tr>';
+	              	
+	              	}
+	              	 
+	              	 
+	              	 $('#showResult').append(element);
+	               }  
+	               
+	               else
+	            	   {
+	            	  	alert("data cannot be fetched");
+	            	   }
+	             },
+	    
+ 			error: function(e){  
+   					alert('Error121212: ' + e);  
+   					//alert(e.toString());
+ 			}				
+   
+	  });//ajax call ends
+}
+
+function firstEvolutionOperator(){
+	$('#showResult').empty();
+	$.ajax({
+ 		 type: "GET",
+	        url:"http://localhost:8080/DM_temporal/webapi/user/get_evolution_first",
+	        contentType:"text/plain",
+ 	        
+           
+           success: function(response){   
+               if(response!=null){
+              	 var obj = JSON.parse(JSON.stringify(response)); 
+              	 var status = obj.msg;
+              	 var d = new Date(obj.validFrom);
+              	 element = '<tr>'+
+              	 			'<th>Status</th>'+
+              	 			'<th>PostedOn</th></tr>';
+              	 element = element +
+              	 			'<tr>'+
+              	 			'<td>'+status+'</td>'+
+              	 			'<td>'+d+'</td>'+
+              	 			'<tr>';
+              	 $('#showResult').append(element);
+               }  
+               
+               else
+            	   {
+            	  	alert("data cannot be fetched");
+            	   }
+             },
+	    
+  			error: function(e){  
+    					alert('Error121212: ' + e);  
+    					alert(e.toString());
+  			}				
+    
+	  });//ajax call ends
+}
+
+
+
+function lastEvolutionOperator(){
+	$('#showResult').empty();
+	$.ajax({
+ 		 type: "GET",
+	        url:"http://localhost:8080/DM_temporal/webapi/user/get_evolution_last",
+	        contentType:"text/plain",
+ 	        
            
            success: function(response){   
                if(response!=null){
