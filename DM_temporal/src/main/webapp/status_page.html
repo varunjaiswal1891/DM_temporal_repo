@@ -50,7 +50,7 @@
         	$("#postbutton").click(function(e)
         	{
         		var msg=$("textarea#posttext").val();
-        		document.write(msg);
+        		//document.write(msg);
                  
              console.log('add new status');
          $.ajax({
@@ -64,7 +64,7 @@
                  //alert(data);
                  
                  if(resp!=null){
-                 	 	   
+                 	window.location.reload("status_page.html");	   
                          	  
                  }	
                  else
