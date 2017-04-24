@@ -198,4 +198,23 @@ public class UserResource {
 	}
 	
 	
+	@GET
+    @Path("/get_next_day_scale")
+	@Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<Message> getNextDayScale(@CookieParam("ID") String uname,@CookieParam("date1") long date1,@CookieParam("date2") long date2) throws JsonParseException, JsonMappingException, IOException, ParseException{
+		System.out.println("here====="+uname);
+		System.out.println("date ms="+date1);
+		return TemporalDB.next_scale(uname, date1, date2);
+	}
+	
+	
+	@GET
+    @Path("/get_column_timestamp")
+	@Produces({MediaType.APPLICATION_JSON})
+    public Message getColumnTimeStamp(@CookieParam("ID") String uname,@CookieParam("status") String s1) throws JsonParseException, JsonMappingException, IOException{
+		
+		return TemporalDB.column_timestamp(uname,s1);
+	}
+	
+	
 }//class ends here

@@ -623,4 +623,115 @@ public class TemporalDB{
     
     
     
+    public static ArrayList<Message> next_scale(String username,long date1,long date2)
+    {
+         
+         ArrayList<Message> al=new ArrayList<Message>();
+     	try{
+     		
+     		System.out.println("inside  try catch of last");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+			/*System.out.println("date1="+date1+"date2="+date2);
+			BasicDBObject getQuery = new BasicDBObject();
+		    getQuery.put("validFrom", new BasicDBObject("$gt",date1));
+		    getQuery.put("validFrom", new BasicDBObject("$lt",date2));
+		    getQuery.put("username",username);
+		   */
+		    BasicDBObject andQuery = new BasicDBObject();
+	          List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+	          obj.add(new BasicDBObject("username",username));
+	          obj.add(new BasicDBObject("validFrom",new BasicDBObject("$lt",date2)));
+	          obj.add(new BasicDBObject("validFrom",new BasicDBObject("$gt",date1)));
+	          andQuery.put("$and", obj);
+           
+           
+           //map:function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}
+           String map = "function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}";
+		   String reduce = "function(key,values){return values;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,andQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+		   
+		    for (DBObject o : out.results()) {
+
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());	
+		    	Message m1=new Message();
+		    	final JSONObject obj1 = new JSONObject(json_data);
+			    final JSONObject m11 = obj1.getJSONObject("value");
+			    final JSONObject m112 = obj1.getJSONObject("_id");
+			    
+			    m1.setMsg(m112.getString("msg"));
+			    m1.setValidFrom(m11.getLong("validFrom"));
+			    al.add(m1);
+		}
+     	}	    
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return al;
+    }
+	
+    
+    
+    public static Message column_timestamp(String username,String status)
+    {
+         Message m1=new Message();
+         //ArrayList<Message> al=new ArrayList<Message>();
+     	try{
+     		
+     		System.out.println("inside  try catch of last");
+			mongoclient = new MongoClient("localhost",27017);
+			db = mongoclient.getDB(dbName);
+			collection = db.getCollection("status_collectionHistory");
+			
+		    BasicDBObject andQuery = new BasicDBObject();
+	          List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+	          obj.add(new BasicDBObject("username",username));
+	          obj.add(new BasicDBObject("msg",new BasicDBObject("$regex", status)));
+
+	          andQuery.put("$and", obj);
+           
+           
+           //map:function(){emit({userID:this.username,msg:this.msg},{validFrom:this.validFrom});}
+           String map = "function(){emit({userID:this.username,validFrom:this.validFrom,msg:this.msg},{validTo:this.validTo});}";
+		   String reduce = "function(key,values){return values;}";
+		   MapReduceCommand cmd = new MapReduceCommand(collection,map,reduce,null,MapReduceCommand.OutputType.INLINE,andQuery);
+		   MapReduceOutput out = collection.mapReduce(cmd);
+			    
+		    String json_data="";
+
+		    for (DBObject o : out.results()) {
+		    
+		    	json_data=o.toString();
+		    	System.out.println(o.toString());		    
+		    }
+		    final JSONObject obj1 = new JSONObject(json_data);
+		    final JSONObject m11 = obj1.getJSONObject("value");
+		    final JSONObject m112 = obj1.getJSONObject("_id");
+		    //if(m11.getLong("validTo")==0)
+		    //{
+		   // System.out.println("rrrrrrrr"+m11.("validTo"));
+		        m1.setValidFrom(m112.getLong("validFrom"));
+			    m1.setValidTo(m11.getLong("validTo"));
+			    m1.setMsg(m112.getString("msg"));
+			    System.out.println("gggggggggg"+m1.getMsg());
+			    	
+		    
+		
+     	}	    
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			}    
+      return m1;
+    }
+	
+    
+    
+    
+    
 }

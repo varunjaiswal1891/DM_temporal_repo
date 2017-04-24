@@ -248,9 +248,7 @@
 							<option value="7">Evolution_Column(AS OF)</option>
 							<option value="81">First Evolution</option>
 							<option value="82">Last Evolution</option>
-							<option value="9">Evolution (Val1-Val2)</option>
 							<option value="10">Column Timestamps Val</option>
-							<option value="11">This Column Value()</option>
 		  </select>
 		</div>
 		</div>	
@@ -270,8 +268,24 @@
 			<input type="button" value="OK" onclick="evolutionColumnOperator()">
 		</div>
 		
+		<div id="calenderPickerNextDayColumnOperator" style="display:none">
+			<input type="date" name="from" id="from4"/>
+			<input type="button" value="OK" onclick="next_day_scale_Operator()">
+		</div>
+		<div id="calenderPickerNextHourColumnOperator" style="display:none">
+			<input type="date" name="from" id="from5"/>
+			<input type="button" value="OK" onclick="next_hour_scale_Operator()">
+		</div>
 		
+		<div id="calenderPickerNextMonthColumnOperator" style="display:none">
+			<input type="date" name="from6" id="from6"/>
+			<input type="button" value="OK" onclick="next_month_scale_Operator()">
+		</div>
 		
+		<div id="getStatus" style="display:none">
+			<input type="text"  id="status"/>
+			<input type="button" value="OK" onclick="get_column_timestamp_operator()">
+		</div>
 		
 		<div class="panel panel-success">
 			<div class="panel-body">
